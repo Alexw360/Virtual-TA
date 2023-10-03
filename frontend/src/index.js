@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import HomePage from './HomePage';
+import ChatbotPage from './ChatbotPage';
+import DashboardPage from './DashboardPage';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -9,7 +11,15 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>
+    element: <HomePage/>
+  },
+  {
+    path: "/chatbot",
+    element: <ChatbotPage/>
+  },
+  {
+    path: "/dashboard",
+    element: <DashboardPage/>
   }
 ])
 

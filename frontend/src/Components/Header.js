@@ -1,50 +1,59 @@
 import { NavLink, Link } from 'react-router-dom';
 import logo from '../Assets/VirtualTALogoTransparent.png'
-import { useState } from 'react';
 
-// TODO
-const Header = () => {
+// Header component shared among all main pages
+const Header = (props) => {
 
-    const activeLinkStyle = "bg-amber-600 px-2 py-1 rounded-md";
-    const normalLinkStyle = "px-2 py-1";
+    // highlight currently active tab
+    let homeLinkStyle = "px-2 py-1 rounded-md";
+    let chatbotLinkStyle = "px-2 py-1 rounded-md";
+    let dashboardLinkStyle = "px-2 py-1 rounded-md";
 
-    useEffect(() => {
-        
-    }, [])
+    if (props.page == "home") {
+        homeLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+    } else if (props.page == "chatbot") {
+        chatbotLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+    } else if (props.page == "dashboard") {
+        dashboardLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+    }
+    
 
+    return (
+        <nav className={`bg-[#54b878] border-gray-200`}>
+            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
 
-  return (
-    <nav className="bg-[#54b878] border-gray-200">
-        
-    <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-        <Link to="/app" className="flex items-center">
-            <img src={logo} className="h-8 mr-3" alt="Logo" />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UTD Virtual TA</span>
-        </Link>
+                {/* Logo */}
+                <Link to="/app" className="flex items-center">
+                    <img src={logo} className="h-8 mr-3" alt="Logo" />
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UTD Virtual TA</span>
+                </Link>
 
-        <div className={"w-full block w-auto"} id="navbar-default">
+                {/* Menu elements */}
+                <div className={"w-full md:block md:w-auto"} id="navbar-default">
+                    <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
+                        <li className={homeLinkStyle}>
+                        <NavLink to='/'>
+                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Home</p>
+                        </NavLink>
+                        </li>
 
+                        <li className={chatbotLinkStyle}>
+                        <NavLink to='/chatbot'>
+                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Chatbot</p>
+                        </NavLink>
+                        </li>
 
-
-        {/* className={({isActive, isPending}) => isPending ? "pending" : isActive ? "active" : ""} */}
-
-        <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
-            <li className='bg-amber-600 px-2 py-1 rounded-md'>
-                <NavLink to='/'>
-                    <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Home</p>
-                </NavLink>
-            </li>
-
-            {/* <li>
-            <NavLink activeStyle={{color: 'blue'}} to='/map'>
-            <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">Map</p>
-            </NavLink>
-            </li> */}
-        </ul>
-        </div>
-    </div>
-    </nav>
-  );
+                        <li className={dashboardLinkStyle}>
+                        <NavLink to='/dashboard'>
+                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Dashboard</p>
+                        </NavLink>
+                        </li>
+                    </ul>
+                </div>
+                
+            </div>
+        </nav>
+    );
 }
 
 export default Header;
