@@ -10,17 +10,17 @@ const Header = (props) => {
     let dashboardLinkStyle = "px-2 py-1 rounded-md";
 
     if (props.page == "home") {
-        homeLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+        homeLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     } else if (props.page == "chatbot") {
-        chatbotLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+        chatbotLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     } else if (props.page == "dashboard") {
-        dashboardLinkStyle = "bg-amber-500 px-2 py-1 rounded-md";
+        dashboardLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     }
-    
+
 
     return (
-        <nav className={`bg-[#54b878] border-gray-200`}>
-            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <nav className="border-b border-gray-600 rounded-2xl">
+            <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 shadow-2xl drop-shadow-2xl">
 
                 {/* Logo */}
                 <Link to="/app" className="flex items-center">
@@ -29,7 +29,7 @@ const Header = (props) => {
                 </Link>
 
                 {/* Menu elements */}
-                <div className={"w-full md:block md:w-auto"} id="navbar-default">
+                <div className="w-full md:block md:w-auto" id="navbar-default">
                     <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
                         <li className={homeLinkStyle}>
                         <NavLink to='/'>
