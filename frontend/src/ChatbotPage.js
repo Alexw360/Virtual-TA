@@ -9,7 +9,7 @@ function ChatbotPage() {
 
 	// if user coming from home-page search-bar, retrieve their entered input
 	const {state} = useLocation();
-	const userMsg = "";
+	let userMsg = "";
 	if (state != null) {
 		const {userIn} = state;
 		userMsg = userIn;

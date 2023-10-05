@@ -30,7 +30,7 @@ const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 				messages: [...prev.messages, botMessage],
 			}));
 		}).catch(error => {
-			const botMessage = createChatBotMessage(error);
+			const botMessage = createChatBotMessage("Error!");
 			setState((prev) => ({
 				...prev,
 				messages: [...prev.messages, botMessage],

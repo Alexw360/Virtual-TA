@@ -23,7 +23,7 @@ const Header = (props) => {
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 shadow-2xl drop-shadow-2xl">
 
                 {/* Logo */}
-                <Link to="/app" className="flex items-center">
+                <Link to="/" className="flex items-center">
                     <img src={logo} className="h-8 mr-3" alt="Logo" />
                     <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">UTD Virtual TA</span>
                 </Link>
