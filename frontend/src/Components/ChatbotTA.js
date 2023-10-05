@@ -3,22 +3,39 @@ import 'react-chatbot-kit/build/main.css'
 import { createChatBotMessage } from 'react-chatbot-kit';
 import React from 'react';
 import './ChatbotTA.css';
+import axios from 'axios';
+import { useState } from 'react';
 
 
 // custom configuration for chat-bot
 const config = {
     initialMessages: [createChatBotMessage('Welcome to Virtual-TA!')],
     botName: "Virtual TA",
+	state: {
+		initialUserMessage: "",
+	}
 }
 
 // handles responding to user input
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
-    const handleInput = (msg) => {
-		const botMessage = createChatBotMessage(msg);
-		setState((prev) => ({
-			...prev,
-			messages: [...prev.messages, botMessage],
-		}));
+	const handleInput = async (msg) => {
+		let apiURL = 'http://127.0.0.1:8095/botresponse';
+		axios.post(apiURL, {
+			query: msg,
+			sid: 1
+		}).then(response => {
+			const botMessage = createChatBotMessage(response.data.Answer);
+			setState((prev) => ({
+				...prev,
+				messages: [...prev.messages, botMessage],
+			}));
+		}).catch(error => {
+			const botMessage = createChatBotMessage(error);
+			setState((prev) => ({
+				...prev,
+				messages: [...prev.messages, botMessage],
+			}));
+		});
 	}
 
 	return (
@@ -53,11 +70,17 @@ const MessageParser = ({ children, actions }) => {
 };
   
 
-const ChatbotTA = () => {
+const ChatbotTA = (props) => {
     return (
         <>
           <Chatbot
-            config={config}
+            config={{
+				initialMessages: [createChatBotMessage('Welcome to Virtual-TA!')],
+				botName: "Virtual TA",
+				state: {
+					initialUserMessage: "SAKDJASKJD",
+				}
+			}}
             messageParser={MessageParser}
             actionProvider={ActionProvider}
           />

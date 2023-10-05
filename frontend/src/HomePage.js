@@ -1,6 +1,6 @@
 import Header from './Components/Header';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 // TODO
@@ -13,6 +13,7 @@ const HomePage = () => {
     const [dropdownVisible, setDropdownVisible] = useState(false);
 	const [selectedClass, setSelectedClass] = useState(supportedClasses[0]);
 	const [searchValue, setSearchValue] = useState("");
+	const navigate = useNavigate();
 
 	// on new class selection in dropdown menu
 	const handleDropdownChange = (val) => {
@@ -23,7 +24,9 @@ const HomePage = () => {
 	// on user prompt submit
 	const handleSubmit = () => {
 		console.log(searchValue);
+		navigate("/chatbot", {state: {userIn: searchValue}});
 		// HANDLE AXIOS REQUEST TO BACKEND, OPEN UP CHATBOT PAGE WITH USER PROMPT
+
 	}
 
     return (
