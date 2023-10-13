@@ -2,6 +2,8 @@ import Header from './Components/Header';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from './firebase';
 
 // TODO
 // 	- Make dropdown menu disappear when hovered away from
@@ -28,6 +30,24 @@ const HomePage = () => {
 		// HANDLE AXIOS REQUEST TO BACKEND, OPEN UP CHATBOT PAGE WITH USER PROMPT
 
 	}
+
+	// TEMP TEST CODE
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+              // User is signed in, see docs for a list of available properties
+              // https://firebase.google.com/docs/reference/js/firebase.User
+              const uid = user.uid;
+              // ...
+              console.log("uid", uid)
+            } else {
+              // User is signed out
+              // ...
+              console.log("user is logged out")
+            }
+          });
+         
+    }, [])
 
     return (
         <div className="h-screen bg-gray-900">
