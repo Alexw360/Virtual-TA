@@ -61,15 +61,19 @@ const Signup = () => {
             {/* form */}
             <div className="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 bg-gray-800 border-gray-700">
                 <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                    {/* label */}
                     <h1 className="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white">
                         Create an account
                     </h1>
                     
                     <div className="space-y-4 md:space-y-6">
+                        {/* email */}
                         <div>
                             <label className="block mb-2 text-sm font-medium text-white">Your email</label>
                             <input onChange={(e) => setEmail(e.target.value)} type="email" className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="bobross12@gmail.com"/>
                         </div>
+                        
+                        {/* password fields */}
                         <div>
                             <label className="block mb-2 text-sm font-medium text-white">Password</label>
                             <input onChange={(e) => setPassword(e.target.value)} type="password" placeholder="••••••••" className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
@@ -78,6 +82,8 @@ const Signup = () => {
                             <label className="block mb-2 text-sm font-medium text-white">Confirm Password</label>
                             <input onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="••••••••" className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"/>
                         </div>
+
+                        {/* terms and conditions */}
                         <div className="flex items-start">
                             <div className="flex items-center h-5">
                                 <input onChange={(e) => setAcceptedTOC(e.target.checked)} type="checkbox" className="w-4 h-4 border rounded focus:ring-3 bg-gray-700 border-gray-600 focus:ring-primary-600 ring-offset-gray-800"/>
