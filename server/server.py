@@ -1,4 +1,4 @@
-import os
+import os, re, string, time
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -31,6 +31,20 @@ This should be in the following format:
 Question: [question here]
 Helpful Answer: [answer here]
 Score: [score between 0 and 100]
+
+If you are asked to graph a line, respond using the following format:
+
+!GRAPH [line] END
+
+Where [line] is replaced with the equation of the line.
+
+If a given [line] value is in the form O([value]), where [value] is some string, change [line] to just be [value].
+If a given [line] value starts with 'y =', then remove that part of the value.
+MAKE SURE ALL [line] VALUES ARE WRITTEN IN LaTeX.
+If multiple lines are given, write all [line] values before END.
+Seperate multiple [line] values with a semicolon.
+If any of the above conditions fail, repsond saying why.
+Make sure to provide this in the 'Helpful Answer:' section of the response.
 
 Begin!
 
@@ -71,6 +85,53 @@ def getanswer(query, sesh_id):
     output={"Answer":results["output_text"],"Reference":text_reference}
     return output
 
+# checks if graph is present and isolates it from answer
+def processanswer(inputAnswer):
+    text : str = inputAnswer['Answer']
+    start = text.find('!GRAPH')
+    end = text.find('END')
+    if  start == -1:
+        inputAnswer['Graph'] = []
+        return 
+    inputAnswer['Reference'] = ''
+    graph = text[start+len('!GRAPH'):end]
+    text = text.replace('!GRAPH'+graph+'END','')
+    if text.strip() == '':
+        text = "Graph:"
+    graph = graph.strip()
+    inputAnswer['Graph'] = [replacesqrt(replacelog(x)) for x in graph.split(';')]
+    inputAnswer['Answer'] = text
+    inputAnswer['GraphID'] = generateID()
+
+# generates a random id based on timestamp
+def generateID():
+    chars = string.ascii_letters + string.digits
+    timestamp = int(time.time() * 1000)
+    id = ""
+    while timestamp > 0:
+        id = chars[timestamp % 62] + id
+        timestamp //= 62
+    id = id[-6:]
+    return id
+
+#TODO: temporary functions to change log -> \\log and sqrt{...} -> \\sqrt{...} if ChatGPT forgets to, replace with unicode to LaTeX parser
+def replacelog(s):
+    pattern = r'(\\?)log'
+    def replace(match):
+        if not match.group(1):
+            return '\\log'
+        else:
+            return match.group(0)
+    return re.sub(pattern, replace, s)
+
+def replacesqrt(s):
+    pattern = r'(\\?)sqrt([\{|\(].*?[\}|\)])'
+    def replace(match):
+        if not match.group(1):
+            return '\\sqrt(' + match.group(2)[1:-1] + ')'
+        else:
+            return match.group(0)
+    return re.sub(pattern, replace, s)
 
 # handles a received request for a chatbot response
 @app.route('/botresponse', methods = ["POST"])
@@ -82,6 +143,8 @@ def processclaim():
         id = input_json["sid"]
         print(chains)
         output=getanswer(query, id)
+        processanswer(output)
+        print(output)
         return output
     except:
         return jsonify({"Status":"Failure --- some error occured"})
