@@ -6,6 +6,7 @@ import ChatbotPage from './ChatbotPage';
 import DashboardPage from './DashboardPage';
 import LoginPage from './LoginPage';
 import AboutPage from './AboutPage';
+import ProfilePage from './ProfilePage';
 import reportWebVitals from './reportWebVitals';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
 	{
 		path: "/about",
 		element: <AboutPage/>
+	},
+	{
+		path: '/profile',
+		element: <ProfilePage/>
 	}
 ])
 

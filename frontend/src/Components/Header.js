@@ -8,6 +8,7 @@ const Header = (props) => {
     let homeLinkStyle = "px-2 py-1 rounded-md";
     let chatbotLinkStyle = "px-2 py-1 rounded-md";
     let dashboardLinkStyle = "px-2 py-1 rounded-md";
+    let profileLinkStyle = "px-2 py-1 rounded-md";
 
     if (props.page == "home") {
         homeLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
@@ -15,6 +16,8 @@ const Header = (props) => {
         chatbotLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     } else if (props.page == "dashboard") {
         dashboardLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
+    } else if (props.page == "profile") {
+        profileLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     }
 
 
@@ -29,23 +32,31 @@ const Header = (props) => {
                 </Link>
 
                 {/* Menu elements */}
-                <div className="w-full md:block md:w-auto" id="navbar-default">
-                    <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0">
+                <div className="w-auto md:block" id="navbar-default">
+                    <ul className="font-medium flex p-0 mt-0 rounded-lg flex-row space-x-4 content-center">
                         <li className={homeLinkStyle}>
                         <NavLink to='/'>
-                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Home</p>
+                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Home</p>
                         </NavLink>
                         </li>
 
                         <li className={chatbotLinkStyle}>
                         <NavLink to='/chatbot'>
-                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Chatbot</p>
+                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Chatbot</p>
                         </NavLink>
                         </li>
 
                         <li className={dashboardLinkStyle}>
                         <NavLink to='/dashboard'>
-                        <p className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-amber-200 md:p-0 dark:text-white md:dark:hover:text-amber-200 dark:hover:bg-gray-700 dark:hover:text-amber-200 md:dark:hover:bg-transparent">Dashboard</p>
+                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Dashboard</p>
+                        </NavLink>
+                        </li>
+
+                        <li className={profileLinkStyle}>
+                        <NavLink to='/profile'>
+                        <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                            <span class="font-medium text-gray-300">JL</span>
+                        </div>
                         </NavLink>
                         </li>
                     </ul>
