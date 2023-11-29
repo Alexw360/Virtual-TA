@@ -2,37 +2,32 @@ import os, re, string, time
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from langchain.document_loaders import DirectoryLoader
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.prompts import PromptTemplate
-from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
-from langchain.output_parsers import RegexParser
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler 
+from langchain.callbacks.manager import CallbackManager
+from langchain.chains import RetrievalQA
 
-
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 # init flask and env
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
-key = os.environ.get("OPENAIKEY")
 
 
 # load embedding model
 docembeddings = FAISS.load_local("llm_faiss_index", OpenAIEmbeddings())
 
 # GPT variables
-prompt_template = """Use the following pieces of context to answer the question at the end.
+prompt_template = """Use the following pieces of context and the previous chat history to answer the question at the end.
 
 This should be in the following format:
 
 Question: [question here]
 Helpful Answer: [answer here]
-Score: [score between 0 and 100]
 
 If you are asked to graph a line, respond using the following format:
 
@@ -48,34 +43,20 @@ Separate multiple [line] values with a semicolon.
 If any of the above conditions fail, respond saying why.
 Make sure to provide this in the 'Helpful Answer:' section of the response.
 
-**VirtualTA Bot:**
-Designed to assist with questions about a given class.
-
 Begin!
 
-Context:
----------
-{context}
----------
-
 Chat History:
--------------
 {chat_history}
--------------
+
+Context:
+{context}
 
 Question: {question}
 Helpful Answer:"""
 
-
-output_parser = RegexParser(
-    regex=r"(.*?)\nScore: (.*)",
-    output_keys=["answer", "score"],
-)
-
 PROMPT = PromptTemplate(
     template=prompt_template,
-    input_variables=["context", "chat_history" "question"],
-    output_parser=output_parser,
+    input_variables=["chat_history", "context", "question"],
 )
 
 chains = {}
@@ -84,31 +65,23 @@ chains = {}
 # gets a response from GPT
 def getanswer(query, sesh_id):
     if sesh_id not in chains:
-        chains[sesh_id] = (
-            load_qa_chain(
-                OpenAI(),
-                chain_type="map_rerank",
-                return_intermediate_steps=True,
-                prompt=PROMPT,
-            ),
-            "",
+        prompt = PromptTemplate(input_variables=["chat_history", "context", "question"], template=prompt_template)
+        memory = ConversationBufferMemory(input_key="question", memory_key="chat_history")
+        callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
+        chains[sesh_id] = RetrievalQA.from_chain_type(
+            llm=OpenAI(),
+            chain_type="stuff",
+            retriever=docembeddings.as_retriever(),
+            return_source_documents=True,
+            callbacks=callback_manager,
+            chain_type_kwargs={"prompt": prompt, "memory": memory},
         )
-    chain = chains[sesh_id][0]
-    chat_history = chains[sesh_id][1]
-    relevant_chunks = docembeddings.similarity_search_with_score(query, k=2)
-    chunk_docs = []
-    for chunk in relevant_chunks:
-        chunk_docs.append(chunk[0])
-    results = chain(
-        {"input_documents": chunk_docs, "chat_history": chat_history, "question": query}
-    )
-    text_reference = ""
-    for i in range(len(results["input_documents"])):
-        text_reference += results["input_documents"][i].page_content
-    answer = results["output_text"]
-    output = {"Answer": answer, "Reference": text_reference}
-    chat_history += "Human: " + query + "\nVirtualTA: " + answer + "\n"
-    chains[sesh_id][1] = chat_history
+    chain = chains[sesh_id]
+    results = chain(query)
+    answer = results["result"]
+    text_reference = results["source_documents"][0].metadata
+    citation = f"{text_reference['source']}, p.{text_reference['page']}"
+    output = {"Answer": answer, "Reference": citation}
     return output
 
 
