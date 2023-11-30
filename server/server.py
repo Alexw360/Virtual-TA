@@ -116,7 +116,6 @@ def generateID():
     return id
 
 
-# TODO: temporary functions to change log -> \\log and sqrt{...} -> \\sqrt{...} if ChatGPT forgets to, replace with unicode to LaTeX parser
 def replacelog(s):
     pattern = r"(\\?)log"
 
@@ -149,7 +148,6 @@ def processclaim():
         print(input_json)
         query = input_json["query"]
         id = input_json["sid"]
-        print(chains)
         output = getanswer(query, id)
         processanswer(output)
         print(output)
