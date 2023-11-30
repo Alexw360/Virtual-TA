@@ -45,7 +45,7 @@ const Signup = () => {
     useEffect(() => {
         if (accountSuccess) {
             const _ = setTimeout(() => {
-                navigate("/");
+                navigate("/profile");
             }, 3000)
         }
     }, [accountSuccess])

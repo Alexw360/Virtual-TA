@@ -36,7 +36,7 @@ const Signin = () => {
     useEffect(() => {
         if (loginSuccess) {
             const _ = setTimeout(() => {
-                navigate("/");
+                navigate("/profile");
             }, 3000)
         }
     }, [loginSuccess])

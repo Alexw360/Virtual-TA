@@ -1,5 +1,8 @@
 import { NavLink, Link } from 'react-router-dom';
-import logo from '../Assets/VirtualTALogoTransparent.png'
+import logo from '../Assets/VirtualTALogoTransparent.png';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from '../firebase';
+import { useState, useEffect } from 'react';
 
 // Header component shared among all main pages
 const Header = (props) => {
@@ -9,6 +12,10 @@ const Header = (props) => {
     let chatbotLinkStyle = "px-2 py-1 rounded-md";
     let dashboardLinkStyle = "px-2 py-1 rounded-md";
     let profileLinkStyle = "px-2 py-1 rounded-md";
+    let logInLinkStyle = "px-2 py-1 rounded-md";
+
+    // for updating profile pic if logged in
+    let [userLoggedIn, setUserLoggedIn] = useState(false);
 
     if (props.page == "home") {
         homeLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
@@ -19,6 +26,25 @@ const Header = (props) => {
     } else if (props.page == "profile") {
         profileLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
     }
+
+    // TEMP TEST CODE
+    useEffect(()=>{
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/firebase.User
+                const uid = user.uid;
+                console.log("uid", uid);
+                setUserLoggedIn(true);
+            } else {
+                // User is signed out
+                // ...
+                console.log("user is logged out")
+                setUserLoggedIn(false);
+            }
+            });
+            
+    }, [])
 
 
     return (
@@ -51,14 +77,23 @@ const Header = (props) => {
                         <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Dashboard</p>
                         </NavLink>
                         </li>
+                        
+                        {userLoggedIn ?
+                            <li className={profileLinkStyle}>
+                            <NavLink to='/profile'>
+                            <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                <span className="font-medium text-gray-300">NN</span>
+                            </div>
+                            </NavLink>
+                            </li>
+                        :
+                            <li className={logInLinkStyle}>
+                            <NavLink to='/signin'>
+                            <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent underline">Log In</p>
+                            </NavLink>
+                            </li>
+                        }
 
-                        <li className={profileLinkStyle}>
-                        <NavLink to='/profile'>
-                        <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                            <span class="font-medium text-gray-300">JL</span>
-                        </div>
-                        </NavLink>
-                        </li>
                     </ul>
                 </div>
                 
