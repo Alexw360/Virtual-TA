@@ -5,6 +5,7 @@ import React, { useEffect, useRef } from 'react';
 import './ChatbotTA.css';
 import axios from 'axios';
 import { useState } from 'react';
+import { addStyles, StaticMathField } from 'react-mathquill';
 
 // loads necessary desmos script to create graphs
 const loadDesmosScript = () =>{
@@ -16,6 +17,7 @@ const loadDesmosScript = () =>{
 		script.onload = resolve;
 		script.onerror = reject;
 		script.id = 'desmosScript';
+		addStyles();
 		document.head.appendChild(script);
 	});
 };
@@ -32,9 +34,83 @@ function useUpdateEffect(callback, dependencies){
 	}, dependencies);
 } 
 
+
+// React component to display line info at bottom of graph
+const LinesDisplay = (props) => {
+
+	const output  = useRef([]);
+	const [observationFinished, setObservationFinished] = useState(false);
+	const [linesReady, setLinesReady] = useState(false);
+	const observations = useRef(null);
+
+	useEffect(()=>{	
+		observeLines(props.calculator).then(data => {
+			observations.current = data;
+			setObservationFinished(true);
+		  }).catch(error => {
+			console.error(error);
+			return;
+		  })
+	},[]);
+
+	useEffect(()=>{	
+		if(!observationFinished){
+			return;
+		}
+
+		if(output.current.length != 0){
+			return; 
+		}
+
+		for(var i = 0; i < props.lines.length; i++){
+			if(observations.current['line'+i].isError){
+				output.current.push(<li key={i} className="line-info" style={{height:27.5,width:370}}><span style={{color:props.colors[i % props.colors.length]}}>{props.colors[i % props.colors.length]}: </span>Line could not be graphed</li>);
+			}
+			else{
+				output.current.push(<li onClick={focusLine.bind(this, i, props.calculator, props.selectedLine)} key={i} className="line-info" style={{height:27.5,width:370}}> <span style={{color:props.colors[i % props.colors.length]}}>{props.colors[i % props.colors.length]}: </span><StaticMathField>{'y='+String(props.lines[i])}</StaticMathField></li>);
+			}
+		}
+		setLinesReady(true);
+	},[observationFinished]);
+
+	return(
+		<div>{linesReady ? <div className="line-info-container" style={{width:375}}><ul>{output.current}</ul></div> : <p>Loading...</p>}</div> 
+	)
+}
+
+
+// changes selected line to be dashed
+function focusLine(lineID, calculator, selectedLine){
+	if(selectedLine.current != null)
+		calculator.setExpression({id:'line'+selectedLine.current, lineStyle:window.Desmos.Styles.SOLID});
+	calculator.setExpression({id:'line'+lineID, lineStyle:window.Desmos.Styles.DASHED});
+	selectedLine.current = lineID;
+	return;
+}
+
+// returns error status of all lines
+const observeLines = (calculator) => {
+	return new Promise(function(resolve, reject){
+		let observations = null;
+		calculator.observe('expressionAnalysis', function() {	
+			observations = calculator.expressionAnalysis;
+			
+			if(observations == null)
+				reject('ERR: Desmos returned null for line observations');
+			else
+				resolve(observations);
+		});
+	});
+}
+
 // widget that displays the graph 
 const GraphWidget = (props) => {
 	const [scriptLoaded, setScriptLoaded] = useState(false);
+	const [lineReady, setLineReady] = useState(false);
+	const lines = useRef(null);
+	const colors = useRef(null);
+	const calculator = useRef(null);
+	const selectedLine = useRef(null);
 
 	useEffect(()=>{	
 		if(document.getElementById('desmosScript') !== null)
@@ -50,19 +126,27 @@ const GraphWidget = (props) => {
 
 	useUpdateEffect(() => {
 		let element = document.getElementById('graph'+props.payload.id);
-		if(element !== null && element.children.length !== 0)
+		if(element !== null && element.children.length !== 0){
 			element.children.item(0).remove();
-
-		const calculator = window.Desmos.GraphingCalculator(document.getElementById('graph'+props.payload.id),{expressions:false,settingsMenu:false});
-		let lines = props.payload.lines;
-		for(var i = 0; i < lines.length; i++){
-			calculator.setExpression({id:'line' + i, latex:'y='+lines[i]});
 		}
+			
+		calculator.current = window.Desmos.GraphingCalculator(document.getElementById('graph'+props.payload.id),{expressions:false,settingsMenu:false});
+		lines.current = props.payload.lines;
+		colors.current = Object.keys(window.Desmos.Colors);
+
+		for(var i = 0; i < lines.current.length; i++){
+			calculator.current.setExpression({id:'line' + i, latex:'y='+lines.current[i], color:colors.current[i % colors.current.length]});
+		}
+
+		setLineReady(true);
 		 
 	}, [scriptLoaded]);
 
 	return (
-		<div id= {'graph'+props.payload.id} style={{ width: 375, height: 250}}> </div>
+		<div>
+			<div id= {'graph'+props.payload.id} style={{ width: 375, height: 250}}> </div>
+			{lineReady ? <LinesDisplay {...{lines:lines.current, colors:colors.current, calculator:calculator.current, selectedLine:selectedLine}}></LinesDisplay> : <p>Loading...</p>}
+		</div>
 	)
 };
 
