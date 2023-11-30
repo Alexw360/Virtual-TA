@@ -1,5 +1,6 @@
 import { NavLink, Link } from 'react-router-dom';
 import logo from '../Assets/VirtualTALogoTransparent.png'
+import profile from '../Assets/TemocProfile.jpeg'
 
 // Header component shared among all main pages
 const Header = (props) => {
@@ -35,33 +36,31 @@ const Header = (props) => {
                 <div className="w-auto md:block" id="navbar-default">
                     <ul className="font-medium flex p-0 mt-0 rounded-lg flex-row space-x-4 content-center">
                         <li className={homeLinkStyle}>
-                        <NavLink to='/'>
-                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Home</p>
-                        </NavLink>
+                            <NavLink to='/'>
+                                <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Home</p>
+                            </NavLink>
                         </li>
 
                         <li className={chatbotLinkStyle}>
-                        <NavLink to='/chatbot'>
-                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Chatbot</p>
-                        </NavLink>
+                            <NavLink to='/chatbot'>
+                                <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Chatbot</p>
+                            </NavLink>
                         </li>
 
                         <li className={dashboardLinkStyle}>
-                        <NavLink to='/dashboard'>
-                        <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Dashboard</p>
-                        </NavLink>
+                            <NavLink to='/dashboard'>
+                                <p className="block py-2 pl-3 pr-4 rounded text-white hover:text-amber-200 bg-transparent">Dashboard</p>
+                            </NavLink>
                         </li>
 
                         <li className={profileLinkStyle}>
-                        <NavLink to='/profile'>
-                        <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                            <span class="font-medium text-gray-300">JL</span>
-                        </div>
-                        </NavLink>
+                            <NavLink to='/profile'>
+                                <img src={profile} alt="Profile" className="h-10 w-10 rounded-full" />
+                            </NavLink>
                         </li>
                     </ul>
                 </div>
-                
+
             </div>
         </nav>
     );
