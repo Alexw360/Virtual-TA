@@ -5,6 +5,7 @@ import { db, auth } from './firebase';
 import { ref, onValue, set, update, push } from "firebase/database";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { getStorage, ref as sRef, uploadBytes } from "firebase/storage";
 
 
 function ProfilePage() {
@@ -23,6 +24,9 @@ function ProfilePage() {
 
 	let [enteredCredits, setEnteredCredits] = useState(0);
 	let [enteredCourse, setEnteredCourse] = useState("");
+	let [courseData, setCourseData] = useState({});
+
+	let [uploadedFile, setFile] = useState("");
 
     useEffect(()=>{
         onAuthStateChanged(auth, (user) => {
@@ -61,6 +65,14 @@ function ProfilePage() {
             
     }, [])
 
+	useEffect(() => {
+		const userRef = ref(db, 'courses');
+		onValue(userRef, (snapshot) => {
+			const data = snapshot.val();
+			setCourseData(data);
+		});
+	}, [])
+
 	const updateDBCredit = () => {
 		if (enteredCredits != "" && /^\d+$/.test(enteredCredits)) {
 			update(ref(db, 'users/students/' + uid), {
@@ -85,12 +97,26 @@ function ProfilePage() {
 		}
 	}
 
+	const uploadForm = () => {
+		const storage = getStorage();
+		const storageRef = sRef(storage, 'files');
+		
+		// 'file' comes from the Blob or File API
+		uploadBytes(storageRef, uploadedFile).then((snapshot) => {
+		  console.log('Uploaded a blob or file!');
+		});
+	}
+
 	return (
 		<div className="h-screen bg-gray-900 overflow-y-auto">
 			<Header page={"profile"}/>
 
-            {/* Profile Card Section */}
-			<div className="w-full lg:w-4/12 px-4 mx-auto">
+			<div className="grid grid-cols-4">
+			
+			{/* Left Div */}
+			<div className="col-span-1">
+			{/* Profile Card Section */}
+			<div className="w-full px-4 mx-auto">
 				<div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-4"> {/* Also reduced mt-16 to mt-4 */}
 					<div className="px-6">
 						{/* Profile Image and Stats */}
@@ -181,8 +207,33 @@ function ProfilePage() {
 					</div>
 				</div>
 			</div>
+			</div>
 
+			{/* Right Div */}
+			<div className="col-span-3 p-4">
+				
+				<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+				{courses.length != 0 ? courses.map((course, index) => {
+					return(
+						<div class="max-w-sm h-full flex flex-col rounded overflow-hidden shadow-lg border bg-white">
+							<div class="flex-grow px-6 py-4">
+								<div class="font-bold text-xl mb-2">{course}</div>
+								<p class="text-gray-700 text-sm">
+								{course in courseData ? courseData[course] : "No Course Description"}
+								</p>
+							</div>
+							<div id="bottom" class="w-full max-w-md mx-auto">
+								<input type="file" onChange={(e) => setFile(e.target.value)} id="fileInput" class="w-full border p-2 mb-2" />
+								<button onClick={uploadForm} class="w-full bg-blue-500 text-white p-2 rounded">Add Document</button>
+							</div>
+						</div>
+					)}) : <div className="text-white text-4xl">No courses found</div>
+				}
+				</div>
 
+			</div>
+
+			</div>
 		</div>
 	);
 }
