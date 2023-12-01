@@ -2,16 +2,19 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Header from './Components/Header';
 import profilePic from './Assets/TemocProfile.jpeg';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkerAlt, faBriefcase, faUniversity } from '@fortawesome/free-solid-svg-icons';
+
 
 function ProfilePage() {
 	return (
 		<div className="bg-gray-900 min-h-screen pb-4">
-            <Header page={"profile"} />
-            {/* Profile Card Section */}
-            <section className="pt-4"> {/* Adjusted from pt-16 to pt-4 */}
-                <div className="w-full lg:w-4/12 px-4 mx-auto">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-4"> {/* Also reduced mt-16 to mt-4 */}
-                        <div className="px-6">
+			<Header page={"profile"} />
+			{/* Profile Card Section */}
+			<section className="pt-4"> {/* Adjusted from pt-16 to pt-4 */}
+				<div className="w-full lg:w-4/12 px-4 mx-auto">
+					<div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-4"> {/* Also reduced mt-16 to mt-4 */}
+						<div className="px-6">
 							{/* Profile Image and Stats */}
 							<div className="flex flex-wrap justify-center">
 								<div className="w-full px-4 flex justify-center">
@@ -48,22 +51,21 @@ function ProfilePage() {
 									Temoc Smith
 								</h3>
 								<div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
-									<i className="fas fa-map-marker-alt mr-2 text-lg text-blueGray-400"></i>
+									<FontAwesomeIcon icon={faMapMarkerAlt} className="mr-2 text-lg text-blueGray-400" />
 									Student at University of Texas at Dallas
 								</div>
-								<div className="mb-2 text-blueGray-600 mt-8">
-									<i className="fas fa-briefcase mr-2 text-lg text-blueGray-400"></i>
+								<div className="mb-2 text-blueGray-700 mt-8">
+									<FontAwesomeIcon icon={faBriefcase} className="mr-2 text-lg text-blueGray-700" />
 									Supported Courses
 								</div>
 								<div className="mb-2 text-blueGray-600">
-									<i className="fas fa-university mr-2 text-lg text-blueGray-400"></i>
 									CS 4349
 								</div>
 							</div>
 							{/* Credits Section */}
-							<div className="mt-10 py-10 border-t border-blueGray-200 text-center">
+							<div className="mt-6 py-6 border-t border-blueGray-200 text-center">
 								<div className="flex flex-wrap justify-center">
-									<div className="w-full lg:w-9/12 px-4">
+									<div className="w-full lg:w-9/12 px-5">
 										<p className="mb-4 text-lg leading-relaxed text-blueGray-700">
 											Other Courses:
 										</p>
