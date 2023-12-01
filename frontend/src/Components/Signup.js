@@ -36,6 +36,9 @@ const Signup = () => {
                     username: username,
                     name: name,
                     email: email,
+                    chats: 0,
+                    courses: ["NULL"],
+                    credits: 0,
                 });
             })
             .catch((error) => {

@@ -2,8 +2,9 @@ import { NavLink, Link } from 'react-router-dom';
 import logo from '../Assets/VirtualTALogoTransparent.png';
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth } from '../firebase';
-import { useState, useEffect } from 'react';
 import { ref, onValue } from "firebase/database";
+import { useState, useEffect } from 'react';
+
 
 // Header component shared among all main pages
 const Header = (props) => {
