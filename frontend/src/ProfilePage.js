@@ -1,14 +1,16 @@
 import Header from './Components/Header';
 import { useState, useEffect } from 'react';
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { db, auth } from './firebase';
 import { ref, onValue, set, update, push } from "firebase/database";
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 function ProfilePage() {
 
 	// grabbing user details
+	const navigate = useNavigate();
 	let [uid, setUID] = useState("");
 	let [userLoggedIn, setUserLoggedIn] = useState("");
     let [username, setUsername] = useState("");
@@ -70,6 +72,16 @@ function ProfilePage() {
 	const updateDBCourses = () => {
 		if (enteredCourse != "") {
 			push(ref(db, 'users/students/' + uid + '/courses'), enteredCourse);
+		}
+	}
+
+	const doLogOut = () => {
+		if (userLoggedIn) {
+			signOut(auth).then(() => {
+				navigate("/");
+			}).catch((error) => {
+				console.log(error);
+			});
 		}
 	}
 
@@ -161,7 +173,7 @@ function ProfilePage() {
 										</div>
 									</div>
 
-									
+									<button onClick={doLogOut} type="submit" className="w-full text-white focus:ring-4 focus:outline-none font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-red-600 hover:bg-primary-700 focus:ring-primary-800">Log Out</button>
 
 								</div>
 							</div>
