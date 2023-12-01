@@ -1,8 +1,9 @@
 import { NavLink, Link } from 'react-router-dom';
 import logo from '../Assets/VirtualTALogoTransparent.png';
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from '../firebase';
+import { db, auth } from '../firebase';
 import { useState, useEffect } from 'react';
+import { ref, onValue } from "firebase/database";
 
 // Header component shared among all main pages
 const Header = (props) => {
@@ -16,6 +17,7 @@ const Header = (props) => {
 
     // for updating profile pic if logged in
     let [userLoggedIn, setUserLoggedIn] = useState(false);
+    let [usernameInit, setUsernameInit] = useState("");
 
     if (props.page == "home") {
         homeLinkStyle = "bg-blue-500 px-2 py-1 rounded-md";
@@ -34,13 +36,19 @@ const Header = (props) => {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
                 const uid = user.uid;
-                console.log("uid", uid);
+                const userRef = ref(db, 'users/students/' + uid + '/name');
+                onValue(userRef, (snapshot) => {
+                    const data = snapshot.val();
+                    const [firstName, lastName] = data.split(' ');
+                    const initials = `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`;
+                    setUsernameInit(initials);
+                });
+
                 setUserLoggedIn(true);
             } else {
                 // User is signed out
                 // ...
                 console.log("user is logged out")
-                setUserLoggedIn(false);
             }
             });
             
@@ -82,7 +90,7 @@ const Header = (props) => {
                             <li className={profileLinkStyle}>
                             <NavLink to='/profile'>
                             <div className="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-                                <span className="font-medium text-gray-300">NN</span>
+                                <span className="font-medium text-gray-300">{usernameInit}</span>
                             </div>
                             </NavLink>
                             </li>

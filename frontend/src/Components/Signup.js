@@ -3,6 +3,8 @@ import { auth } from "../firebase";
 import logo from '../Assets/VirtualTALogoTransparent.png'
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { db } from '../firebase';
+import { ref, set } from "firebase/database";
 import Alert from './Alert';
 
 // TODO
@@ -10,6 +12,7 @@ import Alert from './Alert';
 const Signup = () => {
 
     const navigate = useNavigate();
+    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -25,13 +28,20 @@ const Signup = () => {
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 // Signed up 
-                const _ = userCredential.user;
+                const uid = userCredential.user.uid;
                 setError(["", ""]);
                 setAccountSuccess(true);
+                const username = email.includes('@') ? email.substring(0, email.indexOf('@')) : email;
+                set(ref(db, 'users/students/' + uid), {
+                    username: username,
+                    name: name,
+                    email: email,
+                });
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
+                console.log(error)
                 setError([errorCode.toString(), errorMessage.toString()]);
             });
         } else if (password !== confirmPassword) {
@@ -67,6 +77,12 @@ const Signup = () => {
                     </h1>
                     
                     <div className="space-y-4 md:space-y-6">
+                        {/* name */}
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-white">Your name (first last)</label>
+                            <input onChange={(e) => setName(e.target.value)} className="border sm:text-sm rounded-lg block w-full p-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500" placeholder="Bob Ross"/>
+                        </div>
+                        
                         {/* email */}
                         <div>
                             <label className="block mb-2 text-sm font-medium text-white">Your email</label>
