@@ -16,6 +16,7 @@ const HomePage = () => {
 	const [selectedClass, setSelectedClass] = useState(supportedClasses[0]);
 	const [searchValue, setSearchValue] = useState("");
 	const navigate = useNavigate();
+	
 
 	// on new class selection in dropdown menu
 	const handleDropdownChange = (val) => {
