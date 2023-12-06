@@ -1,5 +1,5 @@
 import os, re, string, time
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain.vectorstores import FAISS
@@ -12,10 +12,11 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.chains import RetrievalQA
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+os.environ['OPENAI_API_KEY'] = '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'
 # init flask and env
 app = Flask(__name__)
 CORS(app)
-load_dotenv()
+# load_dotenv()
 
 
 # load embedding model
@@ -77,8 +78,14 @@ def getanswer(query, sesh_id):
             chain_type_kwargs={"prompt": prompt, "memory": memory},
         )
     chain = chains[sesh_id]
-    results = chain(query)
+    print(chain)
+    try:
+        results = chain(query)
+    except Exception as e:
+        print(e)
+    print(results)
     answer = results["result"]
+    print(answer)
     text_reference = results["source_documents"][0].metadata
     citation = f"{text_reference['source']}, p.{text_reference['page']}"
     output = {"Answer": answer, "Reference": citation}

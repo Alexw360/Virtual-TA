@@ -162,7 +162,7 @@ const config = {
 // handles responding to user input
 const ActionProvider = ({ createChatBotMessage, setState, children }) => {
 	const handleInput = async (msg) => {
-		let apiURL = 'http://127.0.0.1:8095/botresponse';
+		let apiURL = 'http://utdvirtualta.pythonanywhere.com/botresponse';
 		axios.post(apiURL, {
 			query: msg,
 			sid: 1
