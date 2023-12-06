@@ -12,7 +12,7 @@ from langchain.callbacks.manager import CallbackManager
 from langchain.chains import RetrievalQA
 
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
-os.environ['OPENAI_API_KEY'] = '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'
+os.environ['OPENAI_API_KEY'] = 'temp'
 # init flask and env
 app = Flask(__name__)
 CORS(app)
